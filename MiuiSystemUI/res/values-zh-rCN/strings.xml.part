@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_statusbar_style">状态栏风格设置</string>
+    <string name="center_clock_title">时间居中显示</string>
+    <string name="center_clock_summary">开启后点击状态栏左上角锁屏，右上角返回主页</string>
+</resources>

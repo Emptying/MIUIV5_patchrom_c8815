@@ -1,0 +1,29 @@
+From d5db293c8484bd8df5d3a3fa6b80c8e154ef7af5 Mon Sep 17 00:00:00 2001
+From: Heavenke <heavenke@Heavenke-Aspire-4739.(none)>
+Date: Tue, 16 Sep 2014 15:18:44 +0800
+Subject: [PATCH] New
+
+---
+ Phone/res/xml/preferred_network_type_ltew.xml |    8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+--- a/Phone/res/xml/preferred_network_type_ltew.xml
++++ b/Phone/res/xml/preferred_network_type_ltew.xml
+@@ -4,7 +4,11 @@
+   xmlns:settings="http://schemas.android.com/apk/res/com.android.settings">
+     <miui.preference.RadioButtonPreferenceCategory android:key="network_type_list_gsm_umts">
+         <miui.preference.RadioButtonPreference android:title="@string/preferred_network_type_pref_entries_4g_preferred_miui" android:key="9" />
+-        <miui.preference.RadioButtonPreference android:title="@string/preferred_network_type_pref_entries_3g_preferred_miui" android:key="3" />
++        <miui.preference.RadioButtonPreference android:title="@string/preferred_network_type_pref_entries_3g_preferred_miui" android:key="0" />
++        <miui.preference.RadioButtonPreference android:title="@string/preferred_network_type_pref_entries_not_2g_preferred_miui" android:key="17" />
++        <miui.preference.RadioButtonPreference android:title="@string/preferred_network_type_pref_entries_only_4g_miui" android:key="16" />
++        <miui.preference.RadioButtonPreference android:title="@string/preferred_network_type_pref_entries_only_3g_miui" android:key="2" />
++        <miui.preference.RadioButtonPreference android:title="@string/preferred_network_type_cdma_miui" android:key="7" />
+         <miui.preference.RadioButtonPreference android:title="@string/preferred_network_type_pref_entries_only_2g_miui" android:key="1" />
+     </miui.preference.RadioButtonPreferenceCategory>
+-</PreferenceScreen>
+\ 文件尾没有 newline 字符
++</PreferenceScreen>
+-- 
+1.7.9.5
+

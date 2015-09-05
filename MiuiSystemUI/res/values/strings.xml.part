@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_statusbar_style">Statusbar Style Settings</string>
+    <string name="center_clock_title">Centered Clock</string>
+    <string name="center_clock_summary">After the opening of the upper left corner of the status bar lock screen, the upper right corner to return home</string>
+</resources>

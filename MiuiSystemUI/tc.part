@@ -1,0 +1,286 @@
+From b627736b02857ba7c130804b6098ed1a05810c2c Mon Sep 17 00:00:00 2001
+From: wonitor <wonitor@yahoo.com>
+Date: Thu, 6 Mar 2014 15:51:28 +0800
+Subject: [PATCH 2/2] 2
+
+---
+ MiuiSystemUI/res/xml/style_settings.xml            |    5 +-
+ .../android/systemui/settings/StyleSettings.smali  |  119 +++++++++++++++++++-
+ .../systemui/statusbar/phone/PhoneStatusBar.smali  |   78 ++++++++++++-
+ 3 files changed, 198 insertions(+), 4 deletions(-)
+
+--- a/MiuiSystemUI/res/xml/style_settings.xml
++++ b/MiuiSystemUI/res/xml/style_settings.xml
+@@ -17,4 +17,7 @@
+             <intent android:targetPackage="com.android.systemui" android:action="android.intent.action.MAIN" android:targetClass="com.android.systemui.settings.AdvancedSettings" />
+         </PreferenceScreen>
+     </PreferenceCategory>
+-</PreferenceScreen>
+\ 文件尾没有 newline 字符
++    <PreferenceCategory android:title="@string/settings_statusbar_style">
++        <CheckBoxPreference android:persistent="false" android:title="@string/center_clock_title" android:key="center_clock" android:summary="@string/center_clock_summary"/>
++    </PreferenceCategory>
++</PreferenceScreen>
+--- a/MiuiSystemUI/smali/com/android/systemui/settings/StyleSettings.smali
++++ b/MiuiSystemUI/smali/com/android/systemui/settings/StyleSettings.smali
+@@ -7,6 +7,10 @@
+ 
+ 
+ # instance fields
++.field private mCenterClock:Landroid/preference/CheckBoxPreference;
++
++.field private mUIDefine:Landroid/content/SharedPreferences;
++
+ .field private mProgressDialog:Landroid/app/ProgressDialog;
+ 
+ .field private mShowFlowInfo:Landroid/preference/CheckBoxPreference;
+@@ -46,10 +50,73 @@
+     return-object v0
+ .end method
+ 
++.method private updateCenterClockPreference(Ljava/lang/Object;)V
++    .locals 6
++    .parameter "newValue"
++
++    .prologue
++    iget-object v3, p0, Lcom/android/systemui/settings/StyleSettings;->mUIDefine:Landroid/content/SharedPreferences;
++
++    invoke-interface {v3}, Landroid/content/SharedPreferences;->edit()Landroid/content/SharedPreferences$Editor;
++
++    move-result-object v1
++
++    .local v1, editor:Landroid/content/SharedPreferences$Editor;
++    check-cast p1, Ljava/lang/Boolean;
++
++    .end local p1
++    invoke-virtual {p1}, Ljava/lang/Boolean;->booleanValue()Z
++
++    move-result v0
++
++    .local v0, bl:Z
++    const-string v3, "StyleSettings"
++
++    new-instance v4, Ljava/lang/StringBuilder;
++
++    const-string v5, "current obj value is "
++
++    invoke-direct {v4, v5}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
++
++    invoke-virtual {v4, v0}, Ljava/lang/StringBuilder;->append(Z)Ljava/lang/StringBuilder;
++
++    move-result-object v4
++
++    invoke-virtual {v4}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
++
++    move-result-object v4
++
++    invoke-static {v3, v4}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
++
++    const-string v3, "center_clock"
++
++    invoke-interface {v1, v3, v0}, Landroid/content/SharedPreferences$Editor;->putBoolean(Ljava/lang/String;Z)Landroid/content/SharedPreferences$Editor;
++
++    invoke-interface {v1}, Landroid/content/SharedPreferences$Editor;->commit()Z
++
++    iget-object v3, p0, Lcom/android/systemui/settings/StyleSettings;->mCenterClock:Landroid/preference/CheckBoxPreference;
++
++    invoke-virtual {v3, v0}, Landroid/preference/CheckBoxPreference;->setChecked(Z)V
++
++    new-instance v2, Landroid/content/Intent;
++
++    const-string v3, "com.miui.app.ExtraStatusBarManager.REQUEST_RESTART"
++
++    invoke-direct {v2, v3}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
++
++    .local v2, localIntent:Landroid/content/Intent;
++    invoke-virtual {p0, v2}, Lcom/android/systemui/settings/StyleSettings;->sendBroadcast(Landroid/content/Intent;)V
++
++    iget-object v3, p0, Lcom/android/systemui/settings/StyleSettings;->mProgressDialog:Landroid/app/ProgressDialog;
++
++    invoke-virtual {v3}, Landroid/app/ProgressDialog;->show()V
++
++    return-void
++.end method
+ 
+ # virtual methods
+ .method protected onCreate(Landroid/os/Bundle;)V
+-    .locals 4
++    .locals 6
+     .parameter "savedInstanceState"
+ 
+     .prologue
+@@ -139,6 +206,43 @@
+ 
+     invoke-virtual {v0, v1, v3, v2}, Landroid/content/ContentResolver;->registerContentObserver(Landroid/net/Uri;ZLandroid/database/ContentObserver;)V
+ 
++    const/4 v5, 0x0
++
++    const-string v3, "ui_define"
++
++    invoke-virtual {p0, v3, v5}, Lcom/android/systemui/settings/StyleSettings;->getSharedPreferences(Ljava/lang/String;I)Landroid/content/SharedPreferences;
++
++    move-result-object v3
++
++    iput-object v3, p0, Lcom/android/systemui/settings/StyleSettings;->mUIDefine:Landroid/content/SharedPreferences;
++
++    const-string v3, "center_clock"
++
++    invoke-virtual {p0, v3}, Lcom/android/systemui/settings/StyleSettings;->findPreference(Ljava/lang/CharSequence;)Landroid/preference/Preference;
++
++    move-result-object v3
++
++    check-cast v3, Landroid/preference/CheckBoxPreference;
++
++    iput-object v3, p0, Lcom/android/systemui/settings/StyleSettings;->mCenterClock:Landroid/preference/CheckBoxPreference;
++
++    iget-object v3, p0, Lcom/android/systemui/settings/StyleSettings;->mUIDefine:Landroid/content/SharedPreferences;
++
++    const-string v4, "center_clock"
++
++    invoke-interface {v3, v4, v5}, Landroid/content/SharedPreferences;->getBoolean(Ljava/lang/String;Z)Z
++
++    move-result v0
++
++    .local v0, currentCenterClock:Z
++    iget-object v3, p0, Lcom/android/systemui/settings/StyleSettings;->mCenterClock:Landroid/preference/CheckBoxPreference;
++
++    invoke-virtual {v3, v0}, Landroid/preference/CheckBoxPreference;->setChecked(Z)V
++
++    iget-object v3, p0, Lcom/android/systemui/settings/StyleSettings;->mCenterClock:Landroid/preference/CheckBoxPreference;
++
++    invoke-virtual {v3, p0}, Landroid/preference/CheckBoxPreference;->setOnPreferenceChangeListener(Landroid/preference/Preference$OnPreferenceChangeListener;)V
++
+     return-void
+ .end method
+ 
+@@ -228,7 +332,7 @@
+ 
+     move-result v1
+ 
+-    if-eqz v1, :cond_0
++    if-eqz v1, :cond_hj1
+ 
+     check-cast p2, Ljava/lang/Boolean;
+ 
+@@ -239,6 +343,17 @@
+ 
+     invoke-static {p0, v1}, Lmiui/app/ExtraStatusBarManager;->setShowNetworkSpeed(Landroid/content/Context;Z)V
+ 
++    :cond_hj1
++    const-string v1, "center_clock"
++
++    invoke-virtual {v0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++
++    move-result v1
++
++    if-eqz v1, :cond_0
++
++    invoke-direct {p0, p2}, Lcom/android/systemui/settings/StyleSettings;->updateCenterClockPreference(Ljava/lang/Object;)V
++
+     goto :goto_0
+ .end method
+ 
+--- a/MiuiSystemUI/smali/com/android/systemui/statusbar/phone/PhoneStatusBar.smali
++++ b/MiuiSystemUI/smali/com/android/systemui/statusbar/phone/PhoneStatusBar.smali
+@@ -360,6 +360,8 @@
+ 
+ .field mTrackingPosition:I
+ 
++.field private mUIDefine:Landroid/content/SharedPreferences;
++
+ .field private mUsbNotification:Lcom/android/systemui/statusbar/UsbNotificationView;
+ 
+ .field mVelocityTracker:Landroid/view/VelocityTracker;
+@@ -2233,6 +2235,78 @@
+     return-object v0
+ .end method
+ 
++.method private getStatusBarStyleId()I
++    .locals 5
++
++    .prologue
++    const/4 v4, 0x0
++
++    iget-object v2, p0, Lcom/android/systemui/statusbar/phone/PhoneStatusBar;->mContext:Landroid/content/Context;
++
++    const-string v3, "ui_define"
++
++    invoke-virtual {v2, v3, v4}, Landroid/content/Context;->getSharedPreferences(Ljava/lang/String;I)Landroid/content/SharedPreferences;
++
++    move-result-object v2
++
++    iput-object v2, p0, Lcom/android/systemui/statusbar/phone/PhoneStatusBar;->mUIDefine:Landroid/content/SharedPreferences;
++
++    iget-object v2, p0, Lcom/android/systemui/statusbar/phone/PhoneStatusBar;->mUIDefine:Landroid/content/SharedPreferences;
++
++    const-string v3, "center_clock"
++
++    invoke-interface {v2, v3, v4}, Landroid/content/SharedPreferences;->getBoolean(Ljava/lang/String;Z)Z
++
++    move-result v0
++
++    .local v0, bl:Z
++    const-string v2, "PhoneStatusBar"
++
++    new-instance v3, Ljava/lang/StringBuilder;
++
++    const-string v4, "currentStyleSet:"
++
++    invoke-direct {v3, v4}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
++
++    invoke-virtual {v3, v0}, Ljava/lang/StringBuilder;->append(Z)Ljava/lang/StringBuilder;
++
++    move-result-object v3
++
++    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
++
++    move-result-object v3
++
++    invoke-static {v2, v3}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
++
++    const v1, 0x7f030024
++
++    .local v1, resId:I
++    if-eqz v0, :cond_0
++
++    const v1, 0x7f030037
++
++    :cond_0
++    const-string v2, "PhoneStatusBar"
++
++    new-instance v3, Ljava/lang/StringBuilder;
++
++    const-string v4, "StyleId is "
++
++    invoke-direct {v3, v4}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
++
++    invoke-virtual {v3, v1}, Ljava/lang/StringBuilder;->append(I)Ljava/lang/StringBuilder;
++
++    move-result-object v3
++
++    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
++
++    move-result-object v3
++
++    invoke-static {v2, v3}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
++
++    return v1
++.end method
++
+ .method private getTabIndicatorPosition(I)I
+     .locals 5
+     .parameter "tabIndex"
+@@ -8527,7 +8601,9 @@
+ 
+     iput v0, p0, Lcom/android/systemui/statusbar/phone/PhoneStatusBar;->mIconSize:I
+ 
+-    const v0, 0x7f030024
++    invoke-direct {p0}, Lcom/android/systemui/statusbar/phone/PhoneStatusBar;->getStatusBarStyleId()I
++
++    move-result v0
+ 
+     invoke-static {v4, v0, v9}, Landroid/view/View;->inflate(Landroid/content/Context;ILandroid/view/ViewGroup;)Landroid/view/View;
+ 
+-- 
+1.7.10.4
+

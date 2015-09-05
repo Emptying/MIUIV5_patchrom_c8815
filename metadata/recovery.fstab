@@ -1,0 +1,14 @@
+#	mount	point
+		
+/boot	emmc	/dev/block/mmcblk0p12
+/cache	ext4	/dev/block/mmcblk0p15
+/data	ext4	/dev/block/mmcblk0p18
+/recovery	emmc	/dev/block/mmcblk0p13
+/misc	emmc	/dev/block/mmcblk0p7
+/sdcard	vfat	/dev/block/mmcblk1p1
+/system	ext4	/dev/block/mmcblk0p17
+/sys_boot	vfat	/dev/block/mmcblk0p3
+/fat	vfat	/dev/block/mmcblk0p3
+/emmc	vfat	/dev/block/mmcblk0p19
+/cust	ext4	/dev/block/mmcblk0p16
+		
